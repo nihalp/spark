@@ -315,7 +315,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testHeaders() {
+    public void testHeader() {
 
         final String headerKey = "host";
         final String host = "www.google.com";
@@ -324,7 +324,28 @@ public class RequestTest {
 
         assertEquals("The value of the header specified should be returned",
                 host, request.headers(headerKey));
+    }
 
+    @Test
+    public void testHeaders() {
+
+        Set<String> set = new HashSet<>(Arrays.asList("Host", "User-Agent", "Keep-Alive", "Content-Type"));
+        Enumeration<String> enumeration = Collections.enumeration(set);
+
+        when(servletRequest.getHeaderNames()).thenReturn(enumeration);
+
+        assertEquals("A set of headers should be returned", set, request.headers());
+    }
+
+    @Test
+    public void testAttributes() {
+
+        Set<String> set = new HashSet<>(Arrays.asList("A", "B", "C", "D"));
+        Enumeration<String> enumeration = Collections.enumeration(set);
+
+        when(servletRequest.getAttributeNames()).thenReturn(enumeration);
+
+        assertEquals("A set of attributes should be returned", set, request.attributes());
     }
 
     @Test
