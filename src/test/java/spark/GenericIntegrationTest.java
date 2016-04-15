@@ -70,7 +70,12 @@ public class GenericIntegrationTest {
 
         staticFileLocation("/public");
         externalStaticFileLocation(System.getProperty("java.io.tmpdir"));
+
         webSocket("/ws", WebSocketTestHandler.class);
+
+        get("/ws", (request, response) -> {
+            return "Don't conflict";
+        });
 
         before("/secretcontent/*", (request, response) -> {
             halt(401, "Go Away!");
@@ -412,7 +417,7 @@ public class GenericIntegrationTest {
         try {
             client.start();
             client.connect(ws, URI.create(uri), new ClientUpgradeRequest());
-            ws.awaitClose(30, TimeUnit.SECONDS);
+            ws.awaitClose(5, TimeUnit.SECONDS);
         } finally {
             client.stop();
         }
