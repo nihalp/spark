@@ -16,6 +16,7 @@
  */
 package spark.embeddedserver;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,12 +50,13 @@ public class EmbeddedServers {
     public static EmbeddedServer create(Object identifier,
                                         Routes routeMatcher,
                                         StaticFiles staticFiles,
+                                        Collection<String> webSocketPaths,
                                         boolean multipleHandlers) {
 
         EmbeddedServerFactory factory = factories.get(identifier);
 
         if (factory != null) {
-            return factory.create(routeMatcher, staticFiles, multipleHandlers);
+            return factory.create(routeMatcher, staticFiles, webSocketPaths, multipleHandlers);
         } else {
             throw new RuntimeException("No embedded server matching the identifier");
         }

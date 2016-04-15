@@ -16,6 +16,8 @@
  */
 package spark.embeddedserver;
 
+import java.util.Collection;
+
 import spark.route.Routes;
 import spark.staticfiles.StaticFiles;
 
@@ -27,5 +29,8 @@ public interface EmbeddedServerFactory {
     /**
      * Creates an embedded server instance.
      */
-    public EmbeddedServer create(Routes routeMatcher, StaticFiles staticFiles, boolean hasMultipleHandler);
+    public EmbeddedServer create(Routes routeMatcher,
+                                 StaticFiles staticFiles,
+                                 Collection<String> webSocketPaths,
+                                 boolean hasMultipleHandler);
 }

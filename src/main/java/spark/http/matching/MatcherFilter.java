@@ -17,6 +17,7 @@
 package spark.http.matching;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -49,6 +50,8 @@ public class MatcherFilter implements Filter {
 
     private final StaticFiles staticFiles;
 
+    private final Collection<String> webSocketPaths;
+
     private spark.route.Routes routeMatcher;
     private SerializerChain serializerChain;
 
@@ -65,11 +68,26 @@ public class MatcherFilter implements Filter {
      */
     public MatcherFilter(spark.route.Routes routeMatcher,
                          StaticFiles staticFiles,
+                         Collection<String> webSocketPaths,
                          boolean externalContainer,
                          boolean hasOtherHandlers) {
 
         this.routeMatcher = routeMatcher;
         this.staticFiles = staticFiles;
+        this.webSocketPaths = webSocketPaths;
+        this.externalContainer = externalContainer;
+        this.hasOtherHandlers = hasOtherHandlers;
+        this.serializerChain = new SerializerChain();
+    }
+
+    public MatcherFilter(spark.route.Routes routeMatcher,
+                         StaticFiles staticFiles,
+                         boolean externalContainer,
+                         boolean hasOtherHandlers) {
+
+        this.routeMatcher = routeMatcher;
+        this.staticFiles = staticFiles;
+        this.webSocketPaths = null;
         this.externalContainer = externalContainer;
         this.hasOtherHandlers = hasOtherHandlers;
         this.serializerChain = new SerializerChain();
@@ -98,6 +116,19 @@ public class MatcherFilter implements Filter {
 
         String httpMethodStr = method.toLowerCase();
         String uri = httpRequest.getPathInfo();
+
+        // handled by websocket
+        if (webSocketPaths != null) {
+            for (String path : webSocketPaths) {
+                if (path.equals(uri)) {
+                    if (servletRequest instanceof HttpRequestWrapper) {
+                        ((HttpRequestWrapper) servletRequest).notConsumed(true);
+                        return;
+                    }
+                }
+            }
+        }
+
         String acceptType = httpRequest.getHeader(ACCEPT_TYPE_REQUEST_MIME_HEADER);
 
         Body body = Body.create();

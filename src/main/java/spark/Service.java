@@ -16,6 +16,7 @@
  */
 package spark;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -337,9 +338,11 @@ public final class Service extends Routable {
                         embeddedServerIdentifier = EmbeddedServers.defaultIdentifier();
                     }
 
+                    Collection<String> socketPaths = webSocketHandlers == null ? null : webSocketHandlers.keySet();
                     server = EmbeddedServers.create(embeddedServerIdentifier,
                                                     routes,
                                                     staticFiles,
+                                                    socketPaths,
                                                     hasMultipleHandlers());
 
                     server.configureWebSockets(webSocketHandlers, webSocketIdleTimeoutMillis);

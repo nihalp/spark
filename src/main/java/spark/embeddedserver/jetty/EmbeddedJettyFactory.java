@@ -16,6 +16,8 @@
  */
 package spark.embeddedserver.jetty;
 
+import java.util.Collection;
+
 import spark.embeddedserver.EmbeddedServer;
 import spark.embeddedserver.EmbeddedServerFactory;
 import spark.http.matching.MatcherFilter;
@@ -27,8 +29,8 @@ import spark.staticfiles.StaticFiles;
  */
 public class EmbeddedJettyFactory implements EmbeddedServerFactory {
 
-    public EmbeddedServer create(Routes routeMatcher, StaticFiles staticFiles, boolean hasMultipleHandler) {
-        MatcherFilter matcherFilter = new MatcherFilter(routeMatcher, staticFiles, false, hasMultipleHandler);
+    public EmbeddedServer create(Routes routeMatcher, StaticFiles staticFiles, Collection<String> webSocketPaths, boolean hasMultipleHandler) {
+        MatcherFilter matcherFilter = new MatcherFilter(routeMatcher, staticFiles, webSocketPaths, false, hasMultipleHandler);
         matcherFilter.init(null);
 
         JettyHandler handler = new JettyHandler(matcherFilter);
